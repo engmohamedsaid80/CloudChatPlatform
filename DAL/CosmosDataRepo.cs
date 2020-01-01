@@ -11,11 +11,7 @@ namespace DAL
 {
     public class CosmosDataRepo : DomainCore.Interfaces.IDataRepo
     {
-        // The Azure Cosmos DB endpoint for running this sample.
-        private static readonly string EndpointUri = "https://ms-ng-nosql.documents.azure.com:443/";
-        // The primary key for the Azure Cosmos account.
-        private static readonly string PrimaryKey = "0LdqjvoMM7DKOn1XYqs2RhaIH42RSV8E6K5TfuoafEPMb9b60vA4weVXUtUKNareYdxGy91fv1AOUP6wpCn2Cw==";
-
+        
         // The Cosmos client instance
         private CosmosClient cosmosClient;
 
@@ -23,31 +19,26 @@ namespace DAL
         private Database database;
         private Container container;
 
-        private string databaseId = "ChatDatabase";
-        private string groupContainerId = "GroupContainer";
-        private string userContainerId = "UserContainer";
-        private string messageContainerId = "MsgContainer";
-
         #region prepare
         private async Task PrepareCosmos()
         {
-            this.cosmosClient = new CosmosClient(EndpointUri, PrimaryKey);
-            this.database = await this.cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
+            this.cosmosClient = new CosmosClient(CosmosDBSettings.ENDPOINT_URI, CosmosDBSettings.KEY);
+            this.database = await this.cosmosClient.CreateDatabaseIfNotExistsAsync(CosmosDBSettings.DB_ID);
         }
 
         private async Task PrepareGroupContainer()
         {
-            this.container = await this.database.CreateContainerIfNotExistsAsync(groupContainerId, "/Game");
+            this.container = await this.database.CreateContainerIfNotExistsAsync(CosmosDBSettings.GROUP_CONTAINER_ID, "/Game");
         }
 
         private async Task PrepareUserContainer()
         {
-            this.container = await this.database.CreateContainerIfNotExistsAsync(userContainerId, "/Country");
+            this.container = await this.database.CreateContainerIfNotExistsAsync(CosmosDBSettings.USER_CONTAINER_ID, "/Country");
         }
 
         private async Task PrepareMessageContainer()
         {
-            this.container = await this.database.CreateContainerIfNotExistsAsync(messageContainerId, "/GroupName");
+            this.container = await this.database.CreateContainerIfNotExistsAsync(CosmosDBSettings.MESSAGE_CONTAINER_ID, "/GroupName");
         }
 
         private async Task<IEnumerable<T>> GetItems<T>(string sqlQueryText)

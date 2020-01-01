@@ -20,6 +20,7 @@ namespace ChatGruopsAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllGroups")]
         public async Task<IEnumerable<GroupViewModel>> GetAllGroups(string game)
         {
             CoreEngine core = new CoreEngine();
@@ -37,6 +38,7 @@ namespace ChatGruopsAPI.Controllers
         }
 
         [HttpPost]
+        [Route("CreateGroup")]
         public async Task<MessageResponse> CreateGroup(GroupViewModel group)
         {
             CoreEngine core = new CoreEngine();

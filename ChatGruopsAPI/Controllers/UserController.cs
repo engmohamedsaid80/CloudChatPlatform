@@ -22,10 +22,11 @@ namespace ChatGroupsAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<UserViewModel> GetUserGroups(string user, string game)
+        [Route("GetUserGroups")]
+        public async Task<UserViewModel> GetUserGroups(string user)
         {
             CoreEngine core = new CoreEngine();
-            var userObj = await core.GetUserGroupsAsync(_repo, game, user);
+            var userObj = await core.GetUserGroupsAsync(_repo, TestingSettings.DEFAULT_GAME, user);
 
             UserViewModel userGroups = new UserViewModel
             {
@@ -39,15 +40,44 @@ namespace ChatGroupsAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<MessageResponse> JoinOrLeaveGroup(UserGroupActionModel action)
+        [Route("JoinGroup")]
+        public async Task<MessageResponse> JoinGroup(UserGroupActionModel action)
         {
             CoreEngine core = new CoreEngine();
 
-            var msg = await core.JoinOrLeaveGroup(_repo, action.User, action.Group, action.Location);
+            var msg = await core.JoinGroup(_repo, action.User, action.Group, action.Location);
 
             var response = new MessageResponse { Message = msg };
 
             return response;
         }
+
+        [HttpPost]
+        [Route("LeaveGroup")]
+        public async Task<MessageResponse> LeaveGroup(UserGroupActionModel action)
+        {
+            CoreEngine core = new CoreEngine();
+
+            var msg = await core.LeaveGroup(_repo, action.User, action.Group, action.Location);
+
+            var response = new MessageResponse { Message = msg };
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("UserLogin")]
+        public async Task<MessageResponse> UserLogin(string user)
+        {
+            CoreEngine core = new CoreEngine();
+
+            var msg = await core.UserLogin(_repo, user, TestingSettings.DEFAULT_COUNTRY);
+
+            var response = new MessageResponse { Message = msg };
+
+            return response;
+        }
+
+
     }
 }

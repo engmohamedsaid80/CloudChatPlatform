@@ -11,7 +11,7 @@ namespace DomainCore
     {
         public async Task<string> CreateGroup(Interfaces.IDataRepo repo, Models.GroupModel g)
         {
-            g.id = g.Name.Replace(' ', '-').ToLower();
+            g.id = g.Name.Replace(' ', '-');
             g.MemberCount = 1;
 
             return await repo.AddGroupAsync(g);
@@ -47,14 +47,9 @@ namespace DomainCore
             return userGroups;
         }
 
-        public async Task<string> JoinOrLeaveGroup(Interfaces.IDataRepo repo, string u, string g, string country)
+        public async Task<string> UserLogin(Interfaces.IDataRepo repo, string u, string country)
         {
             string msg = "";
-
-            string groupId = g;
-
-            var group = await repo.GetGroupAsync(groupId);
-            
             UserModel user = await repo.GetUser(u);
 
             if (user == null)
@@ -68,23 +63,25 @@ namespace DomainCore
                 };
             }
 
-            if (group.MemberCount >= 20)
+            msg = await repo.UpdateUserAsync(user);
+
+            return msg;
+        }
+
+        public async Task<string> JoinGroup(Interfaces.IDataRepo repo, string u, string g, string country)
+        {
+            string msg = "";
+
+            string groupId = g;
+
+            var group = await repo.GetGroupAsync(groupId);
+            
+            UserModel user = await repo.GetUser(u);
+
+            if (group.MemberCount >= CoreEngineSettings.MAX_GROUP_MEMBERS_COUNT)
             {
                 msg = group.Name + " reached maximum number of members";
-            }
-            else if(user.Groups.Contains(groupId))
-            {
-                // leave group
-                user.Groups.Remove(groupId);
-
-                await repo.UpdateUserAsync(user);
-
-                group.MemberCount--;
-
-                msg = u + " left group " +group.Name ;
-
-                await repo.UpdateGroupAsync(group);
-            }
+            }            
             else
             {
                 // join group
@@ -104,6 +101,37 @@ namespace DomainCore
             return msg;
         }
 
+        public async Task<string> LeaveGroup(Interfaces.IDataRepo repo, string u, string g, string country)
+        {
+            string msg = "";
+
+            string groupId = g;
+
+            var group = await repo.GetGroupAsync(groupId);
+
+            UserModel user = await repo.GetUser(u);
+
+            if (user.Groups.Contains(groupId))
+            {
+                // leave group
+                user.Groups.Remove(groupId);
+
+                await repo.UpdateUserAsync(user);
+
+                group.MemberCount--;
+
+                msg = u + " left group " + group.Name;
+
+                await repo.UpdateGroupAsync(group);
+            }
+
+
+
+
+            return msg;
+        }
+
+        #region Messages
         public async Task<IEnumerable<Models.MessageModel>> GetGroupMessagesAsync(Interfaces.IDataRepo repo, string group)
         {
             return await repo.GetMessagesAsync(group);
@@ -113,5 +141,6 @@ namespace DomainCore
         {
             return await repo.AddMessageAsync(message);
         }
+        #endregion
     }
 }

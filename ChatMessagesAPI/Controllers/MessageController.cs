@@ -21,6 +21,7 @@ namespace ChatMessagesAPI.Controllers
         }
 
         [HttpGet]
+        [Route("GetGroupMessages")]
         public async Task<IEnumerable<MessageViewModel>> GetGroupMessages(string g)
         {
             CoreEngine core = new CoreEngine();
@@ -40,6 +41,7 @@ namespace ChatMessagesAPI.Controllers
 
 
         [HttpPost]
+        [Route("SendToGroup")]
         public async Task<MessageResponse> SendToGroup(MessageViewModel message)
         {
             CoreEngine core = new CoreEngine();
