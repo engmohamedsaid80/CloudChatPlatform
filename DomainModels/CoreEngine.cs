@@ -19,6 +19,12 @@ namespace DomainCore
             msg = await repo.AddGroupAsync(g);
 
             UserModel user = await repo.GetUser(g.Owner);
+
+            if (user == null)
+            {
+                return "Owner username does not exist";
+            }
+
             user.Groups.Add(g.id);
             await repo.UpdateUserAsync(user);
 
@@ -33,6 +39,17 @@ namespace DomainCore
         public async Task<UserGroupsModel> GetUserGroupsAsync(Interfaces.IDataRepo repo, string game, string user)
         {
             var userObj = await repo.GetUser(user);
+
+            if(userObj == null)
+            {
+                UserGroupsModel empty = new UserGroupsModel
+                {
+                    UserName = "User does not exist"
+                };
+
+                return empty;
+            }
+
             var gameGroups = await repo.GetGroupsAsync(game);
 
             UserGroupsModel userGroups = new UserGroupsModel { UserName = user, Game = game};
@@ -83,8 +100,20 @@ namespace DomainCore
             string groupId = g;
 
             var group = await repo.GetGroupAsync(groupId);
-            
+
+            if (group == null)
+            {
+                msg = "group does not exist";
+                return msg;
+            }
+
             UserModel user = await repo.GetUser(u);
+
+            if(user == null)
+            {
+                msg = "user does not exist";
+                return msg;
+            }
 
             if (group.MemberCount >= CoreEngineSettings.MAX_GROUP_MEMBERS_COUNT)
             {
@@ -117,7 +146,19 @@ namespace DomainCore
 
             var group = await repo.GetGroupAsync(groupId);
 
+            if (group == null)
+            {
+                msg = "group does not exist";
+                return msg;
+            }
+
             UserModel user = await repo.GetUser(u);
+
+            if (user == null)
+            {
+                msg = "user does not exist";
+                return msg;
+            }
 
             if (user.Groups.Contains(groupId))
             {
