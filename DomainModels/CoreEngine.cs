@@ -11,10 +11,18 @@ namespace DomainCore
     {
         public async Task<string> CreateGroup(Interfaces.IDataRepo repo, Models.GroupModel g)
         {
-            g.id = g.Name.Replace(' ', '-');
-            g.MemberCount = 1;
+            string msg = "";
 
-            return await repo.AddGroupAsync(g);
+            g.id = g.Name.Replace(' ', '-');
+            g.Name = g.Name.Replace(' ', '-');
+            g.MemberCount = 1;
+            msg = await repo.AddGroupAsync(g);
+
+            UserModel user = await repo.GetUser(g.Owner);
+            user.Groups.Add(g.id);
+            await repo.UpdateUserAsync(user);
+
+            return msg;
         }
 
         public async Task<IEnumerable<Models.GroupModel>> GetGameGroupsAsync(Interfaces.IDataRepo repo, string game)
@@ -68,7 +76,7 @@ namespace DomainCore
             return msg;
         }
 
-        public async Task<string> JoinGroup(Interfaces.IDataRepo repo, string u, string g, string country)
+        public async Task<string> JoinGroup(Interfaces.IDataRepo repo, string u, string g)
         {
             string msg = "";
 
@@ -101,7 +109,7 @@ namespace DomainCore
             return msg;
         }
 
-        public async Task<string> LeaveGroup(Interfaces.IDataRepo repo, string u, string g, string country)
+        public async Task<string> LeaveGroup(Interfaces.IDataRepo repo, string u, string g)
         {
             string msg = "";
 

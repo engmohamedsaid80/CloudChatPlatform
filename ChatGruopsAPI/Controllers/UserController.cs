@@ -45,7 +45,7 @@ namespace ChatGroupsAPI.Controllers
         {
             CoreEngine core = new CoreEngine();
 
-            var msg = await core.JoinGroup(_repo, action.User, action.Group, action.Location);
+            var msg = await core.JoinGroup(_repo, action.User, action.Group);
 
             var response = new MessageResponse { Message = msg };
 
@@ -58,7 +58,7 @@ namespace ChatGroupsAPI.Controllers
         {
             CoreEngine core = new CoreEngine();
 
-            var msg = await core.LeaveGroup(_repo, action.User, action.Group, action.Location);
+            var msg = await core.LeaveGroup(_repo, action.User, action.Group);
 
             var response = new MessageResponse { Message = msg };
 
@@ -67,11 +67,11 @@ namespace ChatGroupsAPI.Controllers
 
         [HttpPost]
         [Route("UserLogin")]
-        public async Task<MessageResponse> UserLogin(string user)
+        public async Task<MessageResponse> UserLogin(UserLoginRequest user)
         {
             CoreEngine core = new CoreEngine();
 
-            var msg = await core.UserLogin(_repo, user, TestingSettings.DEFAULT_COUNTRY);
+            var msg = await core.UserLogin(_repo, user.UserName, TestingSettings.DEFAULT_COUNTRY);
 
             var response = new MessageResponse { Message = msg };
 

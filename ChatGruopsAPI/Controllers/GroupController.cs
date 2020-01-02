@@ -6,7 +6,7 @@ using ChatGruopsAPI.Models;
 using DomainCore;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ChatGruopsAPI.Controllers
+namespace ChatGroupsAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -25,7 +25,7 @@ namespace ChatGruopsAPI.Controllers
         {
             CoreEngine core = new CoreEngine();
 
-            var result = await core.GetGameGroupsAsync(_repo, game);
+            var result = await core.GetGameGroupsAsync(_repo, TestingSettings.DEFAULT_GAME);
 
             IEnumerable<GroupViewModel> groups = from res in result
                                                  select new GroupViewModel
@@ -45,7 +45,7 @@ namespace ChatGruopsAPI.Controllers
 
             DomainCore.Models.GroupModel g = new DomainCore.Models.GroupModel
             {
-                Game = group.Game,
+                Game = TestingSettings.DEFAULT_GAME,
                 Name = group.Name,
                 Owner = group.Owner
             };

@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace ChatGroupsAPI.Models
 {
-    public class UserGroupActionModel
+    public class UserLoginRequest
     {
-        public string User { get; set; }
-        public string Group { get; set; }
+        public string UserName { get; set; }
     }
 }
