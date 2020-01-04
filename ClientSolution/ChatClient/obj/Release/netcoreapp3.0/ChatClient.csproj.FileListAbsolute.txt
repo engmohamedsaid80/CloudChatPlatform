@@ -67,3 +67,4 @@ D:\Other\Workshop\NextGames\Source\ClientSolution\ChatClient\obj\Release\netcore
 D:\Other\Workshop\NextGames\Source\ClientSolution\ChatClient\obj\Release\netcoreapp3.0\ChatClient.dll
 D:\Other\Workshop\NextGames\Source\ClientSolution\ChatClient\obj\Release\netcoreapp3.0\ChatClient.pdb
 D:\Other\Workshop\NextGames\Source\ClientSolution\ChatClient\obj\Release\netcoreapp3.0\ChatClient.csproj.CopyComplete
+D:\Other\Workshop\NextGames\Source\ClientSolution\ChatClient\obj\Release\netcoreapp3.0\ChatClient.csprojAssemblyReference.cache
