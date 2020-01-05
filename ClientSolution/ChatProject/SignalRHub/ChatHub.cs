@@ -70,11 +70,6 @@ namespace SignalRChat.SignalRHub
 
         public async Task JoinGroup(string groupName)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-
-            //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has joined the group {groupName}.");
-            await Clients.Group(groupName).SendAsync("SendToGroup", $"{Context.GetHttpContext().Request.Query["UserName"]} is now online {groupName}.", groupName, groupName);
-
             //calling Join group API
             ChatUserGroupModel joinGroup = new ChatUserGroupModel();
             joinGroup.Group = groupName;
@@ -90,24 +85,40 @@ namespace SignalRChat.SignalRHub
 
             if(joinGroupResponse.IsSuccessStatusCode)
             {
-
-                //calling get group messages API
-                getGroupMessagesUrl = getGroupMessagesUrl + groupName;
-
-                var groupMessageUri = new Uri(string.Format(getGroupMessagesUrl, string.Empty));
-                HttpClient getGroupMessagesClient = new HttpClient();
-                var getGroupMessagesResponse = await getGroupMessagesClient.GetAsync(groupMessageUri);
-
-
-                var messagesContent = await getGroupMessagesResponse.Content.ReadAsStringAsync();
-
-                IEnumerable<ChatMessageModel> groupMessagesVM = await Task.Run(() => JsonConvert.DeserializeObject<IEnumerable<ChatMessageModel>>(messagesContent.ToString()));
-
-                foreach (ChatMessageModel msgVM in groupMessagesVM)
+                var contentResult = await joinGroupResponse.Content.ReadAsStringAsync();
+                var responseMessage = JsonConvert.DeserializeObject<APIMessageResponse>(contentResult);
+                if(responseMessage.Message.StartsWith("error"))
                 {
-
-                    await Clients.Caller.SendAsync("PopulateMyGroupMessage", msgVM.GroupName, msgVM.SenderName, msgVM.Content);
+                    await Clients.Caller.SendAsync("DisplayError", responseMessage.Message);
                 }
+                else
+                {
+                    await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+
+                    //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has joined the group {groupName}.");
+                    await Clients.Group(groupName).SendAsync("SendToGroup", $"{Context.GetHttpContext().Request.Query["UserName"]} is now online {groupName}.", groupName, groupName);
+
+                    await Clients.Caller.SendAsync("JoinGroupTab", groupName);
+
+                    //calling get group messages API
+                    getGroupMessagesUrl = getGroupMessagesUrl + groupName;
+
+                    var groupMessageUri = new Uri(string.Format(getGroupMessagesUrl, string.Empty));
+                    HttpClient getGroupMessagesClient = new HttpClient();
+                    var getGroupMessagesResponse = await getGroupMessagesClient.GetAsync(groupMessageUri);
+
+
+                    var messagesContent = await getGroupMessagesResponse.Content.ReadAsStringAsync();
+
+                    IEnumerable<ChatMessageModel> groupMessagesVM = await Task.Run(() => JsonConvert.DeserializeObject<IEnumerable<ChatMessageModel>>(messagesContent.ToString()));
+
+                    foreach (ChatMessageModel msgVM in groupMessagesVM)
+                    {
+
+                        await Clients.Caller.SendAsync("PopulateMyGroupMessage", msgVM.GroupName, msgVM.SenderName, msgVM.Content);
+                    }
+                }
+                
 
             }
 

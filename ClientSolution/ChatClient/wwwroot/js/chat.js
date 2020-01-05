@@ -22,6 +22,30 @@ connection.on("Send", function (message) {
     document.getElementById("messagesList").appendChild(li);
 });
 
+connection.on("DisplayError", function (message) {
+    alert(message);
+});
+
+connection.on("JoinGroupTab", function (groupName) {
+        var AnchorId = "Anchor_" + groupName;
+        var liId = "li_" + groupName;
+
+        var groupLi = "<li role='presentation' id ='li_" + groupName + "' class='active' onclick='ActiveGroup(this.id);'>" +
+            "<a href='#" + groupName + "'  data-toggle='tab' id='" + AnchorId + "'><div class='chatInfoWrapper'>" +
+            "<div class='chatUserAvatar'><img src='/ChatStyle/images/defaultAvatar.png' alt='User Avatar'>" +
+            "</div><div class='chatUserInfo'><h3>" + groupName + "</h3></div></div></a></li>";
+
+        $("#ui_Groups").append(groupLi);
+        var myId = "chatScroll_" + groupName;
+        var chatBox = "<div role='tabpanel' class='tab-pane' id='" + groupName + "'><div class='chatScroll' id='" + myId + "'>" + groupName + "</div></div>";
+
+        $("#chatBox").append(chatBox);
+
+        $("li").removeClass('active');
+        $("#" + liId).addClass('active');
+        $("#" + AnchorId).trigger("click");
+});
+
 connection.on("SendToGroup", function (message,group, senderName) {
     //var li = document.createElement("li");
     //li.textContent = message;
@@ -118,9 +142,11 @@ async function AddGroup() {
 
     groupName = groupName.replace(/ /g, '-');
 
-    var AnchorId = "Anchor_" + groupName;
-    var liId = "li_" + groupName;
+    
     try {
+
+        var AnchorId = "Anchor_" + groupName;
+        var liId = "li_" + groupName;
 
         var groupLi = "<li role='presentation' id ='li_" + groupName + "' class='active' onclick='ActiveGroup(this.id);'>" +
             "<a href='#" + groupName + "'  data-toggle='tab' id='" + AnchorId +"'><div class='chatInfoWrapper'>" +
@@ -152,24 +178,8 @@ async function JoinGroup() {
 
     groupName = groupName.replace(/ /g, '-');
 
-    var AnchorId = "Anchor_" + groupName;
-    var liId = "li_" + groupName;
+    
     try {
-
-        var groupLi = "<li role='presentation' id ='li_" + groupName + "' class='active' onclick='ActiveGroup(this.id);'>" +
-            "<a href='#" + groupName + "'  data-toggle='tab' id='" + AnchorId + "'><div class='chatInfoWrapper'>" +
-            "<div class='chatUserAvatar'><img src='/ChatStyle/images/defaultAvatar.png' alt='User Avatar'>" +
-            "</div><div class='chatUserInfo'><h3>" + groupName + "</h3></div></div></a></li>";
-
-        $("#ui_Groups").append(groupLi);
-        var myId = "chatScroll_" + groupName;
-        var chatBox = "<div role='tabpanel' class='tab-pane' id='" + groupName + "'><div class='chatScroll' id='" + myId + "'>" + groupName + "</div></div>";
-
-        $("#chatBox").append(chatBox);
-
-        $("li").removeClass('active');
-        $("#" + liId).addClass('active');
-        $("#" + AnchorId).trigger("click");
 
         //add this user to the new group
         await connection.invoke("JoinGroup", groupName);
@@ -215,57 +225,6 @@ async function LeavGroup() {
     event.preventDefault();
 
 }
-
-//document.getElementById("Add-group").addEventListener("click", async (event) => {
-//    var groupName = document.getElementById("group-name").value;
-//    try {
-
-//        var groupLi = "<li role='presentation' id ='li_" + groupName + "' class='active' onclick='group(this.id);'>" +
-//            "<a href='#" + groupName + "' data-toggle='tab'><div class='chatInfoWrapper'>" +
-//            "<div class='chatUserAvatar'><img src='~/ChatStyle/images/defaultAvatar.png' alt='User Avatar'>" +
-//            "</div><div class='chatUserInfo'><h3>Group Name</h3></div></div></a></li>";
-
-//        $("#ui_Groups").append(groupLi);
-//        //add this user to the new group
-//        await connection.invoke("AddToGroup", groupName);
-//    }
-//    catch (e) {
-//        console.error(e.toString());
-//    }
-//    event.preventDefault();
-//});
-
-//document.getElementById("groupmsg").addEventListener("click", async (event) => {
-//    var groupName = document.getElementById("group-name").value;
-//    var groupMsg = document.getElementById("group-message-text").value;
-//    try {
-//        await connection.invoke("SendMessageToGroup", groupName, groupMsg);
-//    }
-//    catch (e) {
-//        console.error(e.toString());
-//    }
-//    event.preventDefault();
-//});
-//document.getElementById("join-group").addEventListener("click", async (event) => {
-//    var groupName = document.getElementById("group-name").value;
-//    try {
-//        await connection.invoke("AddToGroup", groupName);
-//    }
-//    catch (e) {
-//        console.error(e.toString());
-//    }
-//    event.preventDefault();
-//});
-//document.getElementById("leave-group").addEventListener("click", async (event) => {
-//    var groupName = document.getElementById("group-name").value;
-//    try {
-//        await connection.invoke("RemoveFromGroup", groupName);
-//    }
-//    catch (e) {
-//        console.error(e.toString());
-//    }
-//    event.preventDefault();
-//});
 
 
 

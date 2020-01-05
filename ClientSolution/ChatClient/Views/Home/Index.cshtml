@@ -1,41 +1,36 @@
-﻿@{
+﻿@model ChatClient.Models.UserViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
+    <div class="loginWrapper">
+        <div class="loginBox">
+            @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
 
-<script>
-
-
-    function goto() {
-         var url = '@Url.Action("UserChat", "Home", new {name = "NAME"})';
-  url = url.replace("NAME", $("#userName").val());
-
- //just for debugging
-  window.location.href = url;
-
-    }
-
-</script>
-
-
-
-<div class="loginWrapper">
-    <div class="loginBox">
-        <h1 class=" hideText"><a href="#">Next Games</a></h1>
-        <div class="fieldsWrapper">
-            <label class="inputlable">Neckname</label>
-            <input type="text" class="inputText" placeholder="Neckname" id="userName">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <h2>Connect to Chat</h2>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Nickname, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Nickname, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Nickname, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-8 col-md-6">
+                            <input type="submit" value="Connect" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="clearfix"></div>
         </div>
-
-        <div class="buttonsWrapper">
-            <nav class="cl-effect-2">
-                <button id="sendBtn" class="sendBtn" onclick="goto();"><span data-hover="Connect">Connect</span></button>
-            </nav>
-        </div>
-        <div class="clearfix"></div>
     </div>
-
-</div>
 
 
 

@@ -103,7 +103,7 @@ namespace DomainCore
 
             if (group == null)
             {
-                msg = "group does not exist";
+                msg = "error: group does not exist";
                 return msg;
             }
 
@@ -111,13 +111,13 @@ namespace DomainCore
 
             if(user == null)
             {
-                msg = "user does not exist";
+                msg = "error: user does not exist";
                 return msg;
             }
 
             if (group.MemberCount >= CoreEngineSettings.MAX_GROUP_MEMBERS_COUNT)
             {
-                msg = group.Name + " reached maximum number of members";
+                msg = "error: " + group.Name + " reached maximum number of members";
             }            
             else
             {

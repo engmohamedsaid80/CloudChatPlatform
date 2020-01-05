@@ -23,6 +23,16 @@ namespace ChatClient.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult Index(UserViewModel user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+
+            return RedirectToAction("UserChat", new { name = user.Nickname });
+        }
         public IActionResult UserChat(string name)
         {
             return View();
