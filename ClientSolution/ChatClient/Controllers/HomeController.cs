@@ -35,6 +35,7 @@ namespace ChatClient.Controllers
         }
         public IActionResult UserChat(string name)
         {
+            ViewBag.UserName = name;
             return View();
         }
 
